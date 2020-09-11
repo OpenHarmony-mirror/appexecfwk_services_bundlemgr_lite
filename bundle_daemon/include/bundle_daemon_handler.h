@@ -32,10 +32,10 @@ public:
     int32 RemoveFile(const char *file);
     int32 RemoveInstallDirectory(const char *codePath, const char *dataPath);
 private:
-    bool IsValideCodePath(const char *codePath);
-    bool IsValideDataPath(const char *codePath);
-    bool IsValideJsonPath(const char *jsonPath);
-    bool IsValideSystemPath(const char *jsonPath);
+    bool IsValidCodePath(const char *codePath);
+    bool IsValidDataPath(const char *codePath);
+    bool IsValidJsonPath(const char *jsonPath);
+    bool IsValidSystemPath(const char *jsonPath);
 };
 } // OHOS
 #endif // OHOS_BUNDLE_DAEMON_HANDLER_H

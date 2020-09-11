@@ -50,7 +50,7 @@ int32 BundleDaemonHandler::ExtractHap(const char *hapPath, const char *codePath)
     }
 
     // check and mkdir code path
-    if (!IsValideCodePath(codePath)) {
+    if (!IsValidCodePath(codePath)) {
         return EC_INVALID;
     }
     if (!BundleFileUtils::RemoveFile(codePath)) {
@@ -101,8 +101,8 @@ int32 BundleDaemonHandler::RenameFile(const char *oldFile, const char *newFile)
         PRINTE("BundleDaemonHandler", "realPath fail!");
         return EC_INVALID;
     }
-    if (!(IsValideCodePath(realOldPath) && IsValideCodePath(newFile)) &&
-        !(IsValideJsonPath(realOldPath) && IsValideJsonPath(newFile))) {
+    if (!(IsValidCodePath(realOldPath) && IsValidCodePath(newFile)) &&
+        !(IsValidJsonPath(realOldPath) && IsValidJsonPath(newFile))) {
         PRINTE("BundleDaemonHandler", "file path is invalid");
         return EC_INVALID;
     }
@@ -128,7 +128,7 @@ int32 BundleDaemonHandler::CreatePermissionDir()
 
 int32 BundleDaemonHandler::CreateDataDirectory(const char *dataPath, int32_t uid, int32_t gid, bool isChown)
 {
-    if (!IsValideDataPath(dataPath)) {
+    if (!IsValidDataPath(dataPath)) {
         PRINTE("BundleDaemonHandler", "bundleName is nullptr");
         return EC_INVALID;
     }
@@ -155,14 +155,14 @@ int32 BundleDaemonHandler::CreateDataDirectory(const char *dataPath, int32_t uid
 
 int32 BundleDaemonHandler::RemoveInstallDirectory(const char *codePath, const char *dataPath)
 {
-    bool result = IsValideCodePath(codePath) && BundleFileUtils::RemoveFile(codePath);
-    result = IsValideDataPath(dataPath) && BundleFileUtils::RemoveFile(dataPath) && result;
+    bool result = IsValidCodePath(codePath) && BundleFileUtils::RemoveFile(codePath);
+    result = IsValidDataPath(dataPath) && BundleFileUtils::RemoveFile(dataPath) && result;
     return result ? EC_SUCCESS : EC_NODIR;
 }
 
 int32 BundleDaemonHandler::StoreContentToFile(const char *filePath, const void *buffer, uint32_t size)
 {
-    if (!IsValideJsonPath(filePath)) {
+    if (!IsValidJsonPath(filePath)) {
         PRINTE("BundleDaemonHandler", "store content file path invalid");
         return EC_NOFILE;
     }
@@ -194,8 +194,8 @@ int32 BundleDaemonHandler::RemoveFile(const char *filePath)
         PRINTE("BundleDaemonHandler", "realPath fail!");
         return EC_INVALID;
     }
-    if (!IsValideJsonPath(realFilePath) && !IsValideSystemPath(realFilePath) &&
-        !IsValideCodePath(realFilePath)) {
+    if (!IsValidJsonPath(realFilePath) && !IsValidSystemPath(realFilePath) &&
+        !IsValidCodePath(realFilePath)) {
         PRINTE("BundleDaemonHandler", "file path is invalid");
         return EC_INVALID;
     }
@@ -206,7 +206,7 @@ int32 BundleDaemonHandler::RemoveFile(const char *filePath)
     return EC_SUCCESS;
 }
 
-bool BundleDaemonHandler::IsValideCodePath(const char *codePath)
+bool BundleDaemonHandler::IsValidCodePath(const char *codePath)
 {
     if (codePath == nullptr) {
         return false;
@@ -215,7 +215,7 @@ bool BundleDaemonHandler::IsValideCodePath(const char *codePath)
         BundleFileUtils::IsValidPath(SDCARD + HAP_CODE_PATH, codePath);
 }
 
-bool BundleDaemonHandler::IsValideDataPath(const char *dataPath)
+bool BundleDaemonHandler::IsValidDataPath(const char *dataPath)
 {
     if (dataPath == nullptr) {
         return false;
@@ -224,7 +224,7 @@ bool BundleDaemonHandler::IsValideDataPath(const char *dataPath)
         BundleFileUtils::IsValidPath(SDCARD + HAP_DATA_PATH, dataPath);
 }
 
-bool BundleDaemonHandler::IsValideJsonPath(const char *jsonPath)
+bool BundleDaemonHandler::IsValidJsonPath(const char *jsonPath)
 {
     if (jsonPath == nullptr) {
         return false;
@@ -232,7 +232,7 @@ bool BundleDaemonHandler::IsValideJsonPath(const char *jsonPath)
     return BundleFileUtils::IsValidPath(STORAGE + JSON_PATH, jsonPath);
 }
 
-bool BundleDaemonHandler::IsValideSystemPath(const char *path)
+bool BundleDaemonHandler::IsValidSystemPath(const char *path)
 {
     if (path == nullptr) {
         return false;
