@@ -53,19 +53,24 @@ BundleMap::~BundleMap()
 
 void BundleMap::Add(BundleInfo *bundleInfo)
 {
-    if (bundleInfo == nullptr) {
+    if ((bundleInfo == nullptr) || (bundleInfo->bundleName == nullptr)) {
         return;
     }
-
-    if (Get(bundleInfo->bundleName) == nullptr) {
 #ifdef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER
-        MutexAcquire(&g_bundleListMutex, 0);
+    MutexAcquire(&g_bundleListMutex, 0);
 #else
-        MutexAcquire(&g_bundleListMutex, BUNDLELIST_MUTEX_TIMEOUT);
+    MutexAcquire(&g_bundleListMutex, BUNDLELIST_MUTEX_TIMEOUT);
 #endif
-        bundleInfos_->PushFront(bundleInfo);
-        MutexRelease(&g_bundleListMutex);
+    for (auto node = bundleInfos_->Begin(); node != bundleInfos_->End(); node = node->next_) {
+        BundleInfo *info = node->value_;
+        if (info != nullptr && info->bundleName != nullptr && strcmp(info->bundleName, bundleInfo->bundleName) == 0) {
+            MutexRelease(&g_bundleListMutex);
+            return;
+        }
     }
+    bundleInfos_->PushFront(bundleInfo);
+    MutexRelease(&g_bundleListMutex);
+    return;
 }
 
 BundleInfo *BundleMap::Get(const char *bundleName) const
