@@ -26,7 +26,8 @@ extern "C" {
 
 #include "ability_info.h"
 #include "module_info.h"
-#include "stdint.h"
+
+#include <cstdint>
 
 namespace OHOS {
 const char PROFILE_NAME[] = "config.json";

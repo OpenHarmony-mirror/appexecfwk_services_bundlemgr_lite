@@ -16,6 +16,7 @@
 #ifndef OHOS_BUNDLE_MANAGER_SERVICE_H
 #define OHOS_BUNDLE_MANAGER_SERVICE_H
 
+#include <cstdint>
 #include <map>
 #include <vector>
 
@@ -27,7 +28,6 @@
 #include "cJSON.h"
 #include "message.h"
 #include "nocopyable.h"
-#include "stdint.h"
 
 namespace OHOS {
 class ManagerService {

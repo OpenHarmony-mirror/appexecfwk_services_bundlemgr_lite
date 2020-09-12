@@ -19,8 +19,8 @@
 #include "adapter.h"
 #include "bundle_common.h"
 #include "bundle_info.h"
-#include "stdint.h"
 
+#include <cstdint>
 #include <string>
 
 #include "cJSON.h"
