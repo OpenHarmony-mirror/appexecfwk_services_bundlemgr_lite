@@ -19,7 +19,8 @@
 #include "bundle_common.h"
 #include "bundle_info.h"
 #include "bundle_info_utils.h"
-#include "stdint.h"
+
+#include <stdint.h>
 
 namespace OHOS {
 class GtBundleInstaller {
