@@ -73,8 +73,8 @@ int32_t BundleDaemonClient::DeathCallback(const IpcContext* context, void* ipcMs
 BundleDaemonClient::~BundleDaemonClient()
 {
     if (initialized_) {
-        UnRegisteIpcCallback(svcIdentity_);
-        UnRegisteDeathCallback(bdsSvcIdentity_, cbid_);
+        UnregisterIpcCallback(svcIdentity_);
+        UnregisterDeathCallback(bdsSvcIdentity_, cbid_);
         bdsClient_->Release(reinterpret_cast<IUnknown *>(bdsClient_));
         bdsClient_ = nullptr;
         sem_destroy(&sem_);
@@ -103,7 +103,7 @@ bool BundleDaemonClient::Initialize()
     }
 
     // register bundle_daemon callback
-    int32_t ret = RegisteIpcCallback(
+    int32_t ret = RegisterIpcCallback(
         BundleDaemonClient::BundleDaemonCallback, 0, IPC_WAIT_FOREVER, &svcIdentity_, this);
     if (ret != EC_SUCCESS || RegisterCallback() != LITEIPC_OK) {
         PRINTE("BundleDaemonClient", "register bundle_daemon callback fail");
@@ -113,7 +113,7 @@ bool BundleDaemonClient::Initialize()
 
     // register bundle_daemon death callback
     bdsSvcIdentity_ = SAMGR_GetRemoteIdentity(BDS_SERVICE, nullptr);
-    if (RegisteDeathCallback(nullptr, bdsSvcIdentity_, &BundleDaemonClient::DeathCallback, this, &cbid_) !=
+    if (::RegisterDeathCallback(nullptr, bdsSvcIdentity_, &BundleDaemonClient::DeathCallback, this, &cbid_) !=
         LITEIPC_OK) {
         PRINTW("BundleDaemonClient", "register bundle_daemon death callback fail");
         // Keep running if register death callback fail
@@ -139,13 +139,13 @@ void *BundleDaemonClient::RegisterDeathCallback(void *arg)
     Lock<Mutex> lock(client->mutex_);
     client->RegisterCallback();
 
-    UnRegisteDeathCallback(client->bdsSvcIdentity_, client->cbid_);
+    UnregisterDeathCallback(client->bdsSvcIdentity_, client->cbid_);
     client->cbid_ = INVALID_INDEX;
     client->bdsSvcIdentity_.handle = INVALID_INDEX;
     client->bdsSvcIdentity_.token = INVALID_INDEX;
 
     client->bdsSvcIdentity_ = SAMGR_GetRemoteIdentity(BDS_SERVICE, nullptr);
-    if (RegisteDeathCallback(nullptr, client->bdsSvcIdentity_, &BundleDaemonClient::DeathCallback,
+    if (::RegisterDeathCallback(nullptr, client->bdsSvcIdentity_, &BundleDaemonClient::DeathCallback,
         client, &client->cbid_) != LITEIPC_OK) {
         PRINTW("BundleDeamonClient", "register death callback fail");
         // Keep running if register death callback fail
