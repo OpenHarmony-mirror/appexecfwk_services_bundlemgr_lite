@@ -182,7 +182,7 @@ void CommandParser::RunAsInstallCommand(int32_t argc, char *argv[]) const
                     printf("error message: %s\n", ERROR_INSTALL_PATH.c_str());
                     return;
                 }
-                if (RegisteDeathCallback(nullptr, sid, BmToolDeathNotify, nullptr, &cbId) != LITEIPC_OK) {
+                if (RegisterDeathCallback(nullptr, sid, BmToolDeathNotify, nullptr, &cbId) != LITEIPC_OK) {
                     printf("error message: %s\n", "death callback is registered unsuccessfully");
                     return;
                 }
@@ -216,7 +216,7 @@ void CommandParser::RunAsUninstallCommand(int32_t argc, char *argv[]) const
                     printf("error message: %s\n", ERROR_SEM_ERROR.c_str());
                     return;
                 }
-                if (RegisteDeathCallback(nullptr, sid, BmToolDeathNotify, nullptr, &cbId) != LITEIPC_OK) {
+                if (RegisterDeathCallback(nullptr, sid, BmToolDeathNotify, nullptr, &cbId) != LITEIPC_OK) {
                     printf("error message: %s\n", "death callback is registered unsuccessfully");
                     return;
                 }
