@@ -81,7 +81,7 @@ private:
 
 #define CHECK_IS_TRUE(result, errorCode)     \
     do {                                     \
-        if (!result) {                       \
+        if (!(result)) {                       \
             return errorCode;                \
         }                                    \
     } while (0)
