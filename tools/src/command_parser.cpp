@@ -207,8 +207,6 @@ void CommandParser::RunAsInstallCommand(int32_t argc, char *argv[]) const
 
 void CommandParser::RunAsForceInstallCommand(int32_t argc, char *argv[]) const
 {
-
-
    	if (argc > MAX_ARGUMENT_NUMBER) {
         printf("%s\n", (ERROR_EXTRA_PARAMETER + FINSTALL_HELP_MESSAGE).c_str());
         return;
