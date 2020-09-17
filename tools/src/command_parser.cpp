@@ -238,10 +238,12 @@ void CommandParser::RunAsForceInstallCommand(int32_t argc, char *argv[]) const
                     printf("error message: %s\n", "death callback is registered unsuccessfully");
                     return;
                 }
-				
+
+#ifdef OHOS_DEBUG
                 SetDebugMode("disable", SET_SIGN_MODE);
                 SetDebugMode("enable", SET_SIGN_DEBUG_MODE);
-    
+#endif
+
                 Install(realPath, nullptr, ReceiveCallback);
                 sem_wait(&g_sem);
                 break;
