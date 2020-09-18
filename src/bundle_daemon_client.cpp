@@ -154,7 +154,7 @@ void *BundleDaemonClient::RegisterDeathCallback(void *arg)
     return nullptr;
 }
 
-int32 BundleDaemonClient::WaitResultSync(int32 result)
+int32_t BundleDaemonClient::WaitResultSync(int32_t result)
 {
     if (result == EC_SUCCESS) {
         sem_wait(&sem_);
@@ -164,7 +164,7 @@ int32 BundleDaemonClient::WaitResultSync(int32 result)
     return result;
 }
 
-int32 BundleDaemonClient::RegisterCallback()
+int32_t BundleDaemonClient::RegisterCallback()
 {
     IpcIo request;
     char data[IPC_IO_DATA_MAX];
@@ -178,7 +178,7 @@ int32 BundleDaemonClient::RegisterCallback()
     return WaitResultSync(EC_SUCCESS);
 }
 
-int32 BundleDaemonClient::ExtractHap(const char *hapFile, const char *codePath)
+int32_t BundleDaemonClient::ExtractHap(const char *hapFile, const char *codePath)
 {
     if (!initialized_) {
         return EC_NOINIT;
@@ -197,7 +197,7 @@ int32 BundleDaemonClient::ExtractHap(const char *hapFile, const char *codePath)
     return WaitResultSync(bdsClient_->Invoke(bdsClient_, EXTRACT_HAP, &request, nullptr, nullptr));
 }
 
-int32 BundleDaemonClient::RenameFile(const char *oldFile, const char *newFile)
+int32_t BundleDaemonClient::RenameFile(const char *oldFile, const char *newFile)
 {
     if (!initialized_) {
         return EC_NOINIT;
@@ -216,7 +216,7 @@ int32 BundleDaemonClient::RenameFile(const char *oldFile, const char *newFile)
     return WaitResultSync(bdsClient_->Invoke(bdsClient_, RENAME_DIR, &request, nullptr, nullptr));
 }
 
-int32 BundleDaemonClient::CreatePermissionDir()
+int32_t BundleDaemonClient::CreatePermissionDir()
 {
     if (!initialized_) {
         return EC_NOINIT;
@@ -225,7 +225,7 @@ int32 BundleDaemonClient::CreatePermissionDir()
     return WaitResultSync(bdsClient_->Invoke(bdsClient_, CREATE_PERMISSION_DIR, nullptr, nullptr, nullptr));
 }
 
-int32 BundleDaemonClient::CreateDataDirectory(const char *dataPath, int32_t uid, int32_t gid, bool isChown)
+int32_t BundleDaemonClient::CreateDataDirectory(const char *dataPath, int32_t uid, int32_t gid, bool isChown)
 {
     if (!initialized_) {
         return EC_NOINIT;
@@ -246,7 +246,7 @@ int32 BundleDaemonClient::CreateDataDirectory(const char *dataPath, int32_t uid,
     return WaitResultSync(bdsClient_->Invoke(bdsClient_, CREATE_DATA_DIRECTORY, &request, nullptr, nullptr));
 }
 
-int32 BundleDaemonClient::StoreContentToFile(const char *file, const void *buffer, uint32_t size)
+int32_t BundleDaemonClient::StoreContentToFile(const char *file, const void *buffer, uint32_t size)
 {
     if (!initialized_) {
         return EC_NOINIT;
@@ -269,7 +269,7 @@ int32 BundleDaemonClient::StoreContentToFile(const char *file, const void *buffe
     return WaitResultSync(bdsClient_->Invoke(bdsClient_, STORE_CONTENT_TO_FILE, &request, nullptr, nullptr));
 }
 
-int32 BundleDaemonClient::RemoveFile(const char *file)
+int32_t BundleDaemonClient::RemoveFile(const char *file)
 {
     if (!initialized_) {
         return EC_NOINIT;
@@ -287,7 +287,7 @@ int32 BundleDaemonClient::RemoveFile(const char *file)
     return WaitResultSync(bdsClient_->Invoke(bdsClient_, REMOVE_FILE, &request, nullptr, nullptr));
 }
 
-int32 BundleDaemonClient::RemoveInstallDirectory(const char *codePath, const char *dataPath)
+int32_t BundleDaemonClient::RemoveInstallDirectory(const char *codePath, const char *dataPath)
 {
     if (!initialized_) {
         return EC_NOINIT;
