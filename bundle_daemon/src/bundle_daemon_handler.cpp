@@ -15,6 +15,8 @@
 
 #include "bundle_daemon_handler.h"
 
+#include <cstring>
+#include <dirent.h>
 #include <limits.h>
 
 #include "bundle_daemon_log.h"
