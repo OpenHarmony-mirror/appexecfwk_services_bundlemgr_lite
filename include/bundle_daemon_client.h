@@ -38,6 +38,7 @@ public:
     int32_t CreatePermissionDir();
     int32_t CreateDataDirectory(const char *dataPath, int32_t uid, int32_t gid, bool isChown);
     int32_t StoreContentToFile(const char *file, const void *buffer, uint32_t size);
+    int32_t MoveFile(const char *oldFile, const char *newFile);
     int32_t RemoveFile(const char *file);
     int32_t RemoveInstallDirectory(const char *codePath, const char *dataPath);
     static int32_t BundleDaemonCallback(const IpcContext* context, void *ipcMsg, IpcIo *io, void *arg);

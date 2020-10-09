@@ -15,6 +15,8 @@
 
 #include "bundle_daemon_handler.h"
 
+#include <cstring>
+#include <dirent.h>
 #include <limits.h>
 
 #include "bundle_daemon_log.h"
@@ -36,7 +38,7 @@ const std::string SDCARD = "/sdcard";
 const std::string STORAGE = "/storage";
 }
 
-int32 BundleDaemonHandler::ExtractHap(const char *hapPath, const char *codePath)
+int32_t BundleDaemonHandler::ExtractHap(const char *hapPath, const char *codePath)
 {
     char realHapPath[PATH_MAX] = { '\0' };
     if (hapPath == nullptr || realpath(hapPath, realHapPath) == nullptr) {
@@ -94,7 +96,7 @@ int32 BundleDaemonHandler::ExtractHap(const char *hapPath, const char *codePath)
     return EC_SUCCESS;
 }
 
-int32 BundleDaemonHandler::RenameFile(const char *oldFile, const char *newFile)
+int32_t BundleDaemonHandler::RenameFile(const char *oldFile, const char *newFile)
 {
     char realOldPath[PATH_MAX] = { '\0' };
     if (oldFile == nullptr || realpath(oldFile, realOldPath) == nullptr) {
@@ -113,7 +115,7 @@ int32 BundleDaemonHandler::RenameFile(const char *oldFile, const char *newFile)
     return EC_SUCCESS;
 }
 
-int32 BundleDaemonHandler::CreatePermissionDir()
+int32_t BundleDaemonHandler::CreatePermissionDir()
 {
     if (!BundleFileUtils::MkRecursiveDir(PERMISSIONS_PATH, false)) {
         PRINTE("BundleDaemonHandler", "mk dir fail");
@@ -126,7 +128,7 @@ int32 BundleDaemonHandler::CreatePermissionDir()
     return EC_SUCCESS;
 }
 
-int32 BundleDaemonHandler::CreateDataDirectory(const char *dataPath, int32_t uid, int32_t gid, bool isChown)
+int32_t BundleDaemonHandler::CreateDataDirectory(const char *dataPath, int32_t uid, int32_t gid, bool isChown)
 {
     if (!IsValidDataPath(dataPath)) {
         PRINTE("BundleDaemonHandler", "bundleName is nullptr");
@@ -153,14 +155,14 @@ int32 BundleDaemonHandler::CreateDataDirectory(const char *dataPath, int32_t uid
     return EC_SUCCESS;
 }
 
-int32 BundleDaemonHandler::RemoveInstallDirectory(const char *codePath, const char *dataPath)
+int32_t BundleDaemonHandler::RemoveInstallDirectory(const char *codePath, const char *dataPath)
 {
     bool result = IsValidCodePath(codePath) && BundleFileUtils::RemoveFile(codePath);
     result = IsValidDataPath(dataPath) && BundleFileUtils::RemoveFile(dataPath) && result;
     return result ? EC_SUCCESS : EC_NODIR;
 }
 
-int32 BundleDaemonHandler::StoreContentToFile(const char *filePath, const void *buffer, uint32_t size)
+int32_t BundleDaemonHandler::StoreContentToFile(const char *filePath, const void *buffer, uint32_t size)
 {
     if (!IsValidJsonPath(filePath)) {
         PRINTE("BundleDaemonHandler", "store content file path invalid");
@@ -187,7 +189,55 @@ int32 BundleDaemonHandler::StoreContentToFile(const char *filePath, const void *
     return EC_SUCCESS;
 }
 
-int32 BundleDaemonHandler::RemoveFile(const char *filePath)
+int32_t BundleDaemonHandler::MoveFile(const char *oldFile, const char *newFile)
+{
+    char realOldPath[PATH_MAX + 1] = { '\0' };
+    if (oldFile == nullptr || realpath(oldFile, static_cast<char *>(realOldPath)) == nullptr) {
+        PRINTE("BundleDaemonHandler", "realPath oldFile fail!");
+        return EC_INVALID;
+    }
+
+    if (BundleFileUtils::IsExistFile(static_cast<char *>(realOldPath))) {
+        if (!BundleFileUtils::RenameFile(static_cast<char *>(realOldPath), newFile)) {
+            PRINTE("BundleDaemonHandler", "RenameFile fail!");
+            return EC_FAILURE;
+        }
+        return EC_SUCCESS;
+    }
+    if (BundleFileUtils::IsExistFile(newFile)) {
+        PRINTE("BundleDaemonHandler", "target file exist!");
+        return EC_INVALID;
+    }
+    if (!BundleFileUtils::IsExistDir(newFile)) {
+        BundleFileUtils::MkRecursiveDir(newFile, true);
+    }
+
+    DIR *dir = opendir(static_cast<char *>(realOldPath));
+    if (dir == nullptr) {
+        return EC_FAILURE;
+    }
+
+    dirent *ent;
+    while ((ent = readdir(dir)) != nullptr) {
+        if ((strcmp(ent->d_name, ".") == 0) || (strcmp(ent->d_name, "..")) == 0) {
+            continue;
+        }
+        std::string oldFileName = std::string(realOldPath) + PATH_SEPARATOR + ent->d_name;
+        if (BundleFileUtils::IsExistDir(oldFileName.c_str())) {
+            continue;
+        }
+        std::string newFileName = std::string(newFile) + PATH_SEPARATOR + ent->d_name;
+        if (!BundleFileUtils::RenameFile(oldFileName.c_str(), newFileName.c_str())) {
+            PRINTW("BundleDaemonHandler", "RenameFile fail!");
+        }
+    }
+    closedir(dir);
+    BundleFileUtils::RemoveFile(static_cast<char *>(realOldPath));
+
+    return EC_SUCCESS;
+}
+
+int32_t BundleDaemonHandler::RemoveFile(const char *filePath)
 {
     char realFilePath[PATH_MAX] = { '\0' };
     if (filePath == nullptr || realpath(filePath, realFilePath) == nullptr) {

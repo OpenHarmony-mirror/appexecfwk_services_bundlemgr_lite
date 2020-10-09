@@ -115,7 +115,6 @@ void BundleMap::GetCopyBundleInfo(uint32_t flags, const BundleInfo *bundleInfo, 
     newBundleInfo.numOfModule = bundleInfo->numOfModule;
 #ifdef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER
     newBundleInfo.appId = bundleInfo->appId;
-    newBundleInfo.sharedLibPath = bundleInfo->sharedLibPath;
     newBundleInfo.isKeepAlive = bundleInfo->isKeepAlive;
     newBundleInfo.isNativeApp = bundleInfo->isNativeApp;
     newBundleInfo.uid = bundleInfo->uid;

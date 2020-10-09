@@ -269,6 +269,25 @@ int32_t BundleDaemonClient::StoreContentToFile(const char *file, const void *buf
     return WaitResultSync(bdsClient_->Invoke(bdsClient_, STORE_CONTENT_TO_FILE, &request, nullptr, nullptr));
 }
 
+int32_t BundleDaemonClient::MoveFile(const char *oldFile, const char *newFile)
+{
+    if (!initialized_) {
+        return EC_NOINIT;
+    }
+    if ((oldFile == nullptr) || (newFile == nullptr)) {
+        PRINTE("BundleDaemonClient", "invalid params");
+        return EC_INVALID;
+    }
+    IpcIo request;
+    char data[IPC_IO_DATA_MAX];
+    IpcIoInit(&request, data, IPC_IO_DATA_MAX, 0);
+    IpcIoPushString(&request, oldFile);
+    IpcIoPushString(&request, newFile);
+
+    Lock<Mutex> lock(mutex_);
+    return WaitResultSync(bdsClient_->Invoke(bdsClient_, MOVE_FILE, &request, nullptr, nullptr));
+}
+
 int32_t BundleDaemonClient::RemoveFile(const char *file)
 {
     if (!initialized_) {
